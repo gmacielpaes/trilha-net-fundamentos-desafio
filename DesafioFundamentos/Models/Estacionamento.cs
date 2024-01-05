@@ -1,66 +1,81 @@
-namespace DesafioFundamentos.Models
+using System.Text.RegularExpressions;
+
+namespace Projeto_Estacionamento.Models
 {
+    // A classe representa um estacionamento com funcionalidades básicas.
     public class Estacionamento
     {
-        private decimal precoInicial = 0;
-        private decimal precoPorHora = 0;
-        private List<string> veiculos = new List<string>();
-
+        // Construtor que inicializa os preços iniciais do estacionamento.
         public Estacionamento(decimal precoInicial, decimal precoPorHora)
         {
             this.precoInicial = precoInicial;
             this.precoPorHora = precoPorHora;
         }
 
+        // Variáveis privadas para armazenar os preços do estacionamento.
+        private decimal precoInicial;
+        private decimal precoPorHora;
+
+        // Lista para armazenar as placas dos veículos no estacionamento.
+        List<string> veiculos = new List<string>();
+
+        // Método privado para validar o formato da placa de um veículo.
+        private bool ValidarPlaca(string placa)
+        {
+            string padrao = @"^[A-Z]{3}-[0-9]{4}$";
+            RegexOptions options = RegexOptions.IgnoreCase;
+            return Regex.IsMatch(placa, padrao, options);
+        }
+
+        // Método público para adicionar um veículo ao estacionamento.
         public void AdicionarVeiculo()
         {
-            // TODO: Pedir para o usuário digitar uma placa (ReadLine) e adicionar na lista "veiculos"
-            // *IMPLEMENTE AQUI*
-            Console.WriteLine("Digite a placa do veículo para estacionar:");
+            Console.WriteLine("Digite a placa do veículo a adicionar no estacionamento: ");
+            string placa = Console.ReadLine();
+            if (ValidarPlaca(placa))
+            {
+                veiculos.Add(placa.ToUpper());
+                Console.WriteLine("Veículo adicionado com sucesso.");
+            }
+            else
+            {
+                Console.WriteLine("A placa do veículo está no formato incorreto.");
+            }
         }
 
+        // Método público para remover um veículo do estacionamento.
         public void RemoverVeiculo()
         {
-            Console.WriteLine("Digite a placa do veículo para remover:");
-
-            // Pedir para o usuário digitar a placa e armazenar na variável placa
-            // *IMPLEMENTE AQUI*
-            string placa = "";
-
-            // Verifica se o veículo existe
-            if (veiculos.Any(x => x.ToUpper() == placa.ToUpper()))
+            Console.WriteLine("Digite a placa do veículo a remover do estacionamento: ");
+            string placa = Console.ReadLine().ToUpper();
+            if (veiculos.Contains(placa))
             {
-                Console.WriteLine("Digite a quantidade de horas que o veículo permaneceu estacionado:");
-
-                // TODO: Pedir para o usuário digitar a quantidade de horas que o veículo permaneceu estacionado,
-                // TODO: Realizar o seguinte cálculo: "precoInicial + precoPorHora * horas" para a variável valorTotal                
-                // *IMPLEMENTE AQUI*
-                int horas = 0;
-                decimal valorTotal = 0; 
-
-                // TODO: Remover a placa digitada da lista de veículos
-                // *IMPLEMENTE AQUI*
-
-                Console.WriteLine($"O veículo {placa} foi removido e o preço total foi de: R$ {valorTotal}");
+                Console.WriteLine("Quanto tempo o veículo ficou no estacionamento (em minutos)?: ");
+                decimal tempo = Convert.ToDecimal(Console.ReadLine());
+                veiculos.Remove(placa); 
+                decimal precoFinal = precoInicial + (precoPorHora * tempo);
+                Console.WriteLine($"Veículo removido do estacionamento. O valor a pagar é de: {precoFinal:C}");
             }
             else
             {
-                Console.WriteLine("Desculpe, esse veículo não está estacionado aqui. Confira se digitou a placa corretamente");
+                Console.WriteLine("Veículo não encontrado.");
             }
         }
 
+        // Método público para listar os veículos no estacionamento.
         public void ListarVeiculos()
         {
-            // Verifica se há veículos no estacionamento
             if (veiculos.Any())
             {
-                Console.WriteLine("Os veículos estacionados são:");
-                // TODO: Realizar um laço de repetição, exibindo os veículos estacionados
-                // *IMPLEMENTE AQUI*
+                Console.WriteLine("Veículos no estacionamento:");
+                foreach (var placa in veiculos)
+                {
+                    Console.WriteLine(placa);
+                }
             }
             else
             {
-                Console.WriteLine("Não há veículos estacionados.");
+                Console.WriteLine("Não há veículos no estacionamento.");
             }
         }
     }
